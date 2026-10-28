@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function ProfilPreview() {
   const skills = ["UI/UX Design", "Frontend", "React.js"];
 
@@ -5,10 +7,12 @@ export default function ProfilPreview() {
     <div className="p-space-md rounded-[2rem] bg-surface-container-low/70 flex flex-col gap-space-sm mt-space-sm">
       <div className="flex items-center gap-space-sm">
         <div className="relative">
-          <img
+          <Image
             className="w-11 h-11 rounded-full object-cover shadow-sm"
             alt="Foto Ahmad Rizky"
-            src="/images/avatar-1.jpg"
+            src="/images/avatar-1.svg"
+            width={44}
+            height={44}
           />
           <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-tertiary-container shadow-[0_0_0_2px_#ffffff]"></div>
         </div>

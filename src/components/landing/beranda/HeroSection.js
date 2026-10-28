@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const stats = [
   { value: "500+", label: ["TIM", "TERBENTUK"], accent: false },
@@ -72,10 +73,13 @@ export default function HeroSection() {
         {/* Kolom kanan */}
         <div className="lg:col-span-6 relative flex justify-center lg:justify-end">
           <div className="relative w-full max-w-[560px] rounded-[2rem] overflow-hidden shadow-2xl bg-surface-container-low aspect-[4/3] sm:aspect-[1.12/1]">
-            <img
+            <Image
               alt="Mahasiswa berdiskusi dan berkolaborasi dengan laptop di perpustakaan"
               className="w-full h-full object-cover object-center"
-              src="/images/hero.jpg"
+              src="/images/hero.svg"
+              width={800}
+              height={600}
+              priority
             />
 
             <div className="absolute top-5 left-5 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-white/50 flex items-center gap-3">

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function MatchPreview() {
   return (
     <div className="p-space-md rounded-[2rem] bg-surface-container-low/70 flex flex-col gap-space-sm mt-space-sm">
@@ -27,8 +29,20 @@ export default function MatchPreview() {
 
       <div className="flex items-center gap-2 pt-space-xs">
         <div className="flex -space-x-2 overflow-hidden">
-          <img className="inline-block h-7 w-7 rounded-full ring-2 ring-white object-cover" alt="Mitra 1" src="/images/avatar-2.jpg" />
-          <img className="inline-block h-7 w-7 rounded-full ring-2 ring-white object-cover" alt="Mitra 2" src="/images/avatar-3.jpg" />
+          <Image
+            className="inline-block h-7 w-7 rounded-full ring-2 ring-white object-cover"
+            alt="Mitra 1"
+            src="/images/avatar-2.svg"
+            width={28}
+            height={28}
+          />
+          <Image
+            className="inline-block h-7 w-7 rounded-full ring-2 ring-white object-cover"
+            alt="Mitra 2"
+            src="/images/avatar-3.svg"
+            width={28}
+            height={28}
+          />
           <div className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-fixed text-on-primary-fixed text-label-md font-bold ring-2 ring-white">
             +8
           </div>

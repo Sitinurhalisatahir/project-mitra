@@ -6,10 +6,9 @@ const nextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
-  reactCompiler: true,
   turbopack: {
     rules: {
-      "*.css": {
+      "globals.css": {
         loaders: ["@tailwindcss/turbopack"],
         as: "*.css",
       },

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function TentangIllustration() {
   return (
     <div className="lg:col-span-6 relative flex justify-center items-center">
@@ -6,10 +8,12 @@ export default function TentangIllustration() {
 
       <div className="relative w-full max-w-lg bg-surface-container-lowest p-space-md rounded-3xl shadow-xl flex flex-col items-center overflow-hidden">
         <div className="w-full relative rounded-2xl overflow-hidden bg-surface-container-low aspect-square flex items-center justify-center p-space-sm">
-          <img
+          <Image
             alt="Kolaborasi Mahasiswa SkillMatch"
             className="w-full h-full object-contain drop-shadow-sm select-none"
-            src="/images/tentang.png"
+            src="/images/tentang.svg"
+            width={600}
+            height={600}
           />
         </div>
 
