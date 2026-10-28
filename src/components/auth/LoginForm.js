@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 const TOKEN_KEY = "skillmatch_token";
 const USER_KEY = "skillmatch_user";
 
-// Halaman tujuan setelah login (ubah kalau halamannya sudah ada)
+// Halaman tujuan setelah login
 const HOME_BY_ROLE = {
-  admin: "/",
+  admin: "/admin",
   mahasiswa: "/",
 };
 
@@ -19,11 +19,13 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isPendingVerification, setIsPendingVerification] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (loading) return;
     setError("");
+    setIsPendingVerification(false);
     setLoading(true);
 
     try {
@@ -35,11 +37,16 @@ export default function LoginForm() {
       const json = await res.json().catch(() => null);
 
       if (!res.ok || !json?.success) {
-        setError(
-          res.status === 400
-            ? "Email/NIM dan password wajib diisi"
-            : json?.message || "Login gagal, coba lagi"
-        );
+        if (res.status === 403) {
+          setIsPendingVerification(true);
+          setError(
+            json?.message || "Akun Anda masih menunggu verifikasi dari admin"
+          );
+        } else if (res.status === 400) {
+          setError("Email/NIM dan password wajib diisi");
+        } else {
+          setError(json?.message || "Login gagal, coba lagi");
+        }
         return;
       }
 
@@ -52,6 +59,18 @@ export default function LoginForm() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleIdentifierChange(e) {
+    setIdentifier(e.target.value);
+    if (error) setError("");
+    if (isPendingVerification) setIsPendingVerification(false);
+  }
+
+  function handlePasswordChange(e) {
+    setPassword(e.target.value);
+    if (error) setError("");
+    if (isPendingVerification) setIsPendingVerification(false);
   }
 
   return (
@@ -91,7 +110,7 @@ export default function LoginForm() {
                 type="text"
                 autoComplete="username"
                 value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
+                onChange={handleIdentifierChange}
               />
             </div>
           </div>
@@ -114,19 +133,39 @@ export default function LoginForm() {
                 type="password"
                 autoComplete="current-password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
               />
             </div>
           </div>
 
-          {/* Pesan error (hanya muncul saat login gagal) */}
-          {error && (
-            <p
+          {/* Pemberitahuan khusus jika masih menunggu verifikasi admin */}
+          {isPendingVerification && (
+            <div
               role="alert"
-              className="text-xs text-red-200 text-center font-medium"
+              className="rounded-2xl bg-amber-500/20 border border-amber-300/40 p-4 text-left text-amber-100 flex items-start gap-3 shadow-sm transition-all"
             >
-              {error}
-            </p>
+              <i className="fa-solid fa-hourglass-half text-amber-300 text-lg mt-0.5 shrink-0 animate-pulse"></i>
+              <div className="text-xs sm:text-sm">
+                <p className="font-bold text-amber-200">
+                  Menunggu Verifikasi Admin
+                </p>
+                <p className="mt-1 text-amber-100/90 leading-relaxed">
+                  {error ||
+                    "Akun Anda telah berhasil terdaftar tetapi masih menunggu verifikasi dari admin. Silakan tunggu hingga akun Anda disetujui (di-acc) untuk dapat login."}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Pesan error umum (hanya muncul saat gagal bukan verifikasi) */}
+          {!isPendingVerification && error && (
+            <div
+              role="alert"
+              className="rounded-2xl bg-red-500/20 border border-red-300/40 px-4 py-3 text-center text-xs sm:text-sm text-red-100 flex items-center justify-center gap-2 transition-all"
+            >
+              <i className="fa-solid fa-circle-exclamation shrink-0"></i>
+              <span>{error}</span>
+            </div>
           )}
 
           {/* Small Verification Note below inputs */}

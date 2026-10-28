@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { query } from '@/lib/db';
 import { route, ok, body } from '@/lib/api';
-import { signToken } from '@/lib/auth';
 
 const schema = z.object({
   nim: z.string().min(1).max(20),
@@ -54,7 +53,7 @@ const schema = z.object({
  *                 type: integer
  *     responses:
  *       '201':
- *         description: Akun dibuat
+ *         description: Akun dibuat (menunggu verifikasi admin)
  *         content:
  *           application/json:
  *             schema:
@@ -65,8 +64,6 @@ const schema = z.object({
  *                   properties:
  *                     user:
  *                       $ref: '#/components/schemas/Pengguna'
- *                     token:
- *                       type: string
  *       '400':
  *         $ref: '#/components/responses/BadRequest'
  */
@@ -80,5 +77,5 @@ export const POST = route(async ({ req }) => {
      RETURNING pengguna_id, nim, nama, email, jurusan, angkatan, role, is_verified, created_at`,
     [d.nim, d.nama, d.email.toLowerCase(), hash, d.jurusan ?? null, d.angkatan ?? null]
   );
-  return ok({ user: rows[0], token: signToken(rows[0]) }, 201);
+  return ok({ user: rows[0] }, 201);
 });

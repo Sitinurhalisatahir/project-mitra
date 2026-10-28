@@ -52,6 +52,8 @@ const schema = z.object({
  *         $ref: '#/components/responses/BadRequest'
  *       '401':
  *         $ref: '#/components/responses/Unauthorized'
+ *       '403':
+ *         $ref: '#/components/responses/Forbidden'
  */
 export const POST = route(async ({ req }) => {
   const { identifier, password } = await body(req, schema);
@@ -63,6 +65,8 @@ export const POST = route(async ({ req }) => {
   const u = rows[0];
   if (!u || !(await bcrypt.compare(password, u.password_hash)))
     throw new ApiError(401, 'Email/NIM atau password salah');
+  if (!u.is_verified && u.role !== 'admin')
+    throw new ApiError(403, 'Akun Anda masih menunggu verifikasi dari admin');
   const { password_hash, ...user } = u;
   return ok({ user, token: signToken(user) });
 });
