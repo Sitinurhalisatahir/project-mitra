@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { getApiDocs } from "@/lib/swagger";
 import ReactSwagger from "./react-swagger";
+import "swagger-ui-react/swagger-ui.css";
 
 async function Docs() {
   const spec = await getApiDocs();

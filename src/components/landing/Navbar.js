@@ -1,0 +1,67 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import BrandLogo from "./BrandLogo";
+
+const links = [
+  { href: "/", label: "Beranda" },
+  { href: "/fitur", label: "Fitur" },
+  { href: "/tentang", label: "Tentang" },
+];
+
+export default function Navbar() {
+  const pathname = usePathname();
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+      <div className="h-20 max-w-[1440px] mx-auto px-gutter flex items-center justify-between">
+        <BrandLogo />
+
+        <nav className="hidden md:flex items-center gap-space-xs p-1.5 rounded-full bg-surface-container-low">
+          {links.map((l) => {
+            const active = pathname === l.href;
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={active ? "page" : undefined}
+                className={
+                  active
+                    ? "px-space-md py-space-xs rounded-full transition-colors bg-primary-container text-on-primary text-pill-tag shadow-[0_4px_14px_rgba(79,70,229,0.35)]"
+                    : "px-space-md py-space-xs rounded-full text-pill-tag text-on-surface-variant hover:text-on-surface transition-colors"
+                }
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-space-sm">
+          <Link
+            href="/login"
+            className="px-space-md py-space-xs rounded-full text-pill-tag text-on-surface bg-surface-container-lowest shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:bg-surface-container-low transition-colors"
+          >
+            Login
+          </Link>
+          <Link
+            href="/register"
+            className="px-space-md py-space-xs rounded-full text-pill-tag bg-secondary-container text-on-secondary-fixed font-bold shadow-[0_4px_12px_rgba(254,166,25,0.3)] hover:opacity-95 transition-opacity"
+          >
+            Daftar
+          </Link>
+          <Link
+            href="/login"
+            aria-label="Masuk ke akun"
+            className="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-xs"
+          >
+            <span className="material-symbols-outlined text-on-primary text-[18px]">
+              person
+            </span>
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
