@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  /* Dua warna ini dipakai kode Stitch (blob dekorasi) tapi tidak didefinisikan di file HTML-nya */
+  --color-primary-fixed-dim: #c3c0ff;
+  --color-secondary-fixed: #ffddb8;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
