@@ -23,6 +23,26 @@ export async function getTags() {
   return await apiFetch("/api/tag");
 }
 
+export async function createTag(payload) {
+  return await apiFetch("/api/tag", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateTag(id, payload) {
+  return await apiFetch(`/api/tag/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteTag(id) {
+  return await apiFetch(`/api/tag/${id}`, {
+    method: "DELETE",
+  });
+}
+
 export async function getSemuaPengguna(params = {}) {
   const sp = new URLSearchParams();
   if (params.is_verified !== undefined && params.is_verified !== null && params.is_verified !== "all") {
@@ -39,4 +59,3 @@ export async function getSemuaPengguna(params = {}) {
   const qs = sp.toString();
   return await apiFetch(`/api/admin/pengguna${qs ? `?${qs}` : ""}`);
 }
-

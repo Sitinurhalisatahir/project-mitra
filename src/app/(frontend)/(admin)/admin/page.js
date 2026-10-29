@@ -46,7 +46,7 @@ export default function AdminDashboardPage() {
       try {
         const statsData = await getStatistik();
         if (isMounted) {
-          setStats(statsData);
+          setStats(statsData) ;
           setStatsLoading(false);
         }
       } catch {
