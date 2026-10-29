@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { setToken, setUser } from "@/lib/frontend/session";
 
-const TOKEN_KEY = "skillmatch_token";
-const USER_KEY = "skillmatch_user";
+
+
 
 // Halaman tujuan setelah login
 const HOME_BY_ROLE = {
@@ -51,8 +52,8 @@ export default function LoginForm() {
       }
 
       const { token, user } = json.data;
-      localStorage.setItem(TOKEN_KEY, token);
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      setToken(token);
+      setUser(user);
       router.replace(HOME_BY_ROLE[user.role] || "/");
     } catch {
       setError("Tidak dapat terhubung ke server");
