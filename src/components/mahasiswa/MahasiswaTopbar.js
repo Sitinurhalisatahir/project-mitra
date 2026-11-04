@@ -9,18 +9,30 @@ export default function MahasiswaTopbar() {
 
   useEffect(() => {
     let isMounted = true;
-    getNotifikasi(true)
-      .then((res) => {
-        if (!isMounted) return;
-        const count = res?.meta?.unread_count ?? (Array.isArray(res) ? res.length : 0);
-        setHasUnreadNotif(count > 0);
-      })
-      .catch(() => {
-        // Abaikan error pada topbar
-      });
 
+    function checkUnread() {
+      getNotifikasi(true)
+        .then((res) => {
+          if (!isMounted) return;
+          const count =
+            res?.meta?.unread_count ?? (Array.isArray(res) ? res.length : 0);
+          setHasUnreadNotif(count > 0);
+        })
+        .catch(() => {
+          // Abaikan error pada topbar
+        });
+    }
+
+    checkUnread();
+
+    function handleNotifChanged() {
+      checkUnread();
+    }
+
+    window.addEventListener("notifikasi:berubah", handleNotifChanged);
     return () => {
       isMounted = false;
+      window.removeEventListener("notifikasi:berubah", handleNotifChanged);
     };
   }, []);
 
@@ -47,7 +59,9 @@ export default function MahasiswaTopbar() {
           href="/notifikasi"
           className="w-9 h-9 rounded-full bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-on-surface relative shadow-sm"
         >
-          <span className="material-symbols-outlined text-[20px]">notifications</span>
+          <span className="material-symbols-outlined text-[20px]">
+            notifications
+          </span>
           {hasUnreadNotif && (
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container" />
           )}
@@ -62,4 +76,3 @@ export default function MahasiswaTopbar() {
     </header>
   );
 }
-

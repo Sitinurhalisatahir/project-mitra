@@ -118,3 +118,105 @@ export function formatProjectCategory(category) {
   };
   return map[category] || category;
 }
+
+export function formatChatTimestamp(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "";
+
+  const now = new Date();
+  const dMidnight = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const nowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffDays = Math.round((nowMidnight - dMidnight) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) {
+    return d
+      .toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false })
+      .replace(".", ":");
+  }
+  if (diffDays === 1) {
+    return "Kemarin";
+  }
+  if (diffDays >= 2 && diffDays <= 6) {
+    return `${diffDays} hari lalu`;
+  }
+  return new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short" }).format(d);
+}
+
+export function formatMessageTime(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "";
+  return d
+    .toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false })
+    .replace(".", ":");
+}
+
+export function formatChatDayDivider(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "";
+
+  const now = new Date();
+  const dMidnight = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const nowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffDays = Math.round((nowMidnight - dMidnight) / (1000 * 60 * 60 * 24));
+
+  const fullDate = new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(d);
+
+  if (diffDays === 0) {
+    return `Hari Ini, ${fullDate}`;
+  }
+  if (diffDays === 1) {
+    return `Kemarin, ${fullDate}`;
+  }
+  return fullDate;
+}
+
+export function formatNotificationTime(dateStr) {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "-";
+
+  const now = new Date();
+  const diffSec = Math.floor((now.getTime() - d.getTime()) / 1000);
+
+  if (diffSec < 60) {
+    return "Baru saja";
+  }
+
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) {
+    return `${diffMin} menit lalu`;
+  }
+
+  const diffHour = Math.floor(diffMin / 60);
+  if (diffHour < 24) {
+    return `${diffHour} jam lalu`;
+  }
+
+  const dMidnight = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const nowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffDays = Math.round((nowMidnight - dMidnight) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 1) {
+    const timeStr = d
+      .toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false })
+      .replace(".", ":");
+    return `Kemarin, ${timeStr}`;
+  }
+
+  if (diffDays >= 2 && diffDays <= 6) {
+    return `${diffDays} hari lalu`;
+  }
+
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(d);
+}

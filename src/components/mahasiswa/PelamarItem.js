@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getInitials } from "@/lib/frontend/utils/format";
 
 const AVATAR_PALETTES = [
@@ -36,14 +37,12 @@ export default function PelamarItem({ item }) {
           </span>
         </div>
       </div>
-      <button
-        type="button"
-        title="Segera tersedia"
-        className="shrink-0 bg-secondary-container hover:bg-secondary text-on-primary font-semibold px-4 py-1.5 rounded-2xl text-xs shadow-sm transition-all duration-200 cursor-default"
+      <Link
+        href="/proyek-saya"
+        className="shrink-0 bg-secondary-container hover:bg-secondary text-on-primary font-semibold px-4 py-1.5 rounded-2xl text-xs shadow-sm transition-all duration-200"
       >
         Tinjau
-      </button>
+      </Link>
     </div>
   );
 }
-
