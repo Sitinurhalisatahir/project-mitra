@@ -5,13 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { setToken, setUser } from "@/lib/frontend/session";
 
-
-
-
 // Halaman tujuan setelah login
 const HOME_BY_ROLE = {
   admin: "/admin",
-  mahasiswa: "/",
+  mahasiswa: "/dashboard",
 };
 
 export default function LoginForm() {
@@ -54,7 +51,7 @@ export default function LoginForm() {
       const { token, user } = json.data;
       setToken(token);
       setUser(user);
-      router.replace(HOME_BY_ROLE[user.role] || "/");
+      router.replace(HOME_BY_ROLE[user.role] || "/dashboard");
     } catch {
       setError("Tidak dapat terhubung ke server");
     } finally {
