@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { getInitials } from "@/lib/frontend/utils/format";
 
 const AVATAR_PALETTES = [
@@ -50,6 +51,14 @@ export default function PelamarRow({
       </div>
 
       <div className="flex items-center gap-space-xs shrink-0">
+        <Link
+          href={`/chat?user=${applicant.pengguna_id}`}
+          className="w-8 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface-variant hover:text-on-primary flex items-center justify-center transition-all duration-200 mr-1"
+          title={`Chat dengan ${applicant.nama}`}
+          aria-label={`Chat dengan ${applicant.nama}`}
+        >
+          <span className="material-symbols-outlined text-[18px]">chat</span>
+        </Link>
         {applicant.status === "pending" && (
           <>
             <span className="px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-label-md font-semibold mr-1">

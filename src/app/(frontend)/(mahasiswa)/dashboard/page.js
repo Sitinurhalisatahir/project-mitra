@@ -190,14 +190,11 @@ export default function DashboardPage() {
 
   useEffect(() => {
     let ignore = false;
-    // Panggil asynchronous data fetcher
-    getProyekSaya()
-      .catch(() => null)
-      .then(() => {
-        if (!ignore) {
-          fetchDashboardData();
-        }
-      });
+    Promise.resolve().then(() => {
+      if (!ignore) {
+        fetchDashboardData();
+      }
+    });
 
     return () => {
       ignore = true;

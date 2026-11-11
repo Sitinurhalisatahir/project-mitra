@@ -146,6 +146,13 @@ export default function RegisterForm() {
           >
             Sudah punya akun? Login di sini
           </Link>
+          <Link
+            className="text-xs sm:text-sm text-indigo-200/80 hover:text-white transition-colors inline-flex items-center gap-1.5 pt-1"
+            href="/"
+          >
+            <i className="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Kembali ke Beranda</span>
+          </Link>
         </div>
       </form>
     </AuthCard>

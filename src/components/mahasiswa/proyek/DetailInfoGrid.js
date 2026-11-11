@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import {
   formatProjectCategory,
@@ -92,21 +93,35 @@ export default function DetailInfoGrid({ proyek }) {
       </div>
 
       {/* 4. Pemilik Proyek */}
-      <div className="flex items-start gap-3 min-w-0">
-        <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary flex-shrink-0">
-          <span className="material-symbols-outlined text-[20px]">person_pin</span>
+      <div className="flex items-start justify-between gap-3 min-w-0">
+        <div className="flex items-start gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary flex-shrink-0">
+            <span className="material-symbols-outlined text-[20px]">person_pin</span>
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-label-md text-outline uppercase tracking-wider font-semibold">
+              Pemilik Proyek
+            </span>
+            <span className="text-title-lg text-on-surface font-semibold leading-snug truncate">
+              {proyek?.pemilik_nama || "-"}
+            </span>
+            <span className="text-label-md text-on-surface-variant leading-snug truncate">
+              {pemilikSub}
+            </span>
+          </div>
         </div>
-        <div className="flex flex-col min-w-0">
-          <span className="text-label-md text-outline uppercase tracking-wider font-semibold">
-            Pemilik Proyek
-          </span>
-          <span className="text-title-lg text-on-surface font-semibold leading-snug truncate">
-            {proyek?.pemilik_nama || "-"}
-          </span>
-          <span className="text-label-md text-on-surface-variant leading-snug truncate">
-            {pemilikSub}
-          </span>
-        </div>
+
+        {/* Tombol chat dengan pemilik proyek (jika bukan proyek milik sendiri) */}
+        {!proyek?.is_pemilik && proyek?.pemilik_id && (
+          <Link
+            href={`/chat?user=${proyek.pemilik_id}`}
+            className="w-9 h-9 rounded-full bg-primary-container hover:bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm transition-all"
+            title={`Chat dengan ${proyek.pemilik_nama}`}
+            aria-label={`Chat dengan ${proyek.pemilik_nama}`}
+          >
+            <span className="material-symbols-outlined text-[18px]">chat</span>
+          </Link>
+        )}
       </div>
     </div>
   );

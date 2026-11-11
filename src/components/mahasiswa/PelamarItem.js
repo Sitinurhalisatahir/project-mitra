@@ -37,12 +37,22 @@ export default function PelamarItem({ item }) {
           </span>
         </div>
       </div>
-      <Link
-        href="/proyek-saya"
-        className="shrink-0 bg-secondary-container hover:bg-secondary text-on-primary font-semibold px-4 py-1.5 rounded-2xl text-xs shadow-sm transition-all duration-200"
-      >
-        Tinjau
-      </Link>
+      <div className="flex items-center gap-2 shrink-0">
+        <Link
+          href={`/chat?user=${item.pengguna_id}`}
+          className="w-8 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface-variant hover:text-on-primary flex items-center justify-center transition-all duration-200"
+          title={`Chat dengan ${item.nama}`}
+          aria-label={`Chat dengan ${item.nama}`}
+        >
+          <span className="material-symbols-outlined text-[18px]">chat</span>
+        </Link>
+        <Link
+          href="/proyek-saya"
+          className="shrink-0 bg-secondary-container hover:bg-secondary text-on-primary font-semibold px-4 py-1.5 rounded-2xl text-xs shadow-sm transition-all duration-200"
+        >
+          Tinjau
+        </Link>
+      </div>
     </div>
   );
 }

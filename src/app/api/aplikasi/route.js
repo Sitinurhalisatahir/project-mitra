@@ -48,7 +48,7 @@ import { route, ok } from '@/lib/api';
 // Lamaran milik saya
 export const GET = route(async ({ user }) => {
   const { rows } = await query(
-    `SELECT a.aplikasi_id, a.status, a.pesan, a.applied_at, pr.proyek_id, pr.judul, pr.status AS status_proyek
+    `SELECT a.aplikasi_id, a.status, a.pesan, a.applied_at, pr.proyek_id, pr.judul, pr.kategori, pr.status AS status_proyek
      FROM aplikasi a JOIN proyek pr ON pr.proyek_id = a.proyek_id
      WHERE a.pelamar_id = $1 ORDER BY a.applied_at DESC`,
     [user.pengguna_id]

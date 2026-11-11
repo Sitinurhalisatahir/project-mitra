@@ -1,25 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { clearSession } from "@/lib/frontend/session";
+import { usePathname } from "next/navigation";
 import {
   IconNetwork,
   IconDashboard,
   IconShield,
   IconLayers,
   IconTrend,
-  IconLogout,
 } from "./icons";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-
-  function handleLogout() {
-    clearSession();
-    router.replace("/login");
-  }
 
   const navItems = [
     {
@@ -99,18 +91,6 @@ export default function AdminSidebar() {
             );
           })}
         </nav>
-      </div>
-
-      {/* Sidebar Bottom: Logout (Diberi padding bawah agar tidak tertutup popup/overlay Next.js) */}
-      <div className="p-6 pb-24 border-t border-slate-100" data-purpose="sidebar-footer">
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-full text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-semibold text-sm transition-all group cursor-pointer border border-transparent hover:border-rose-100"
-        >
-          <IconLogout className="w-4 h-4 text-rose-500 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Keluar</span>
-        </button>
       </div>
     </aside>
   );
