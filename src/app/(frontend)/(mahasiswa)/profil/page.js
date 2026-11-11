@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import ProfilHeader from "@/components/mahasiswa/profil/ProfilHeader";
 import DataDasarCard from "@/components/mahasiswa/profil/DataDasarCard";
 import SkillMinatCard from "@/components/mahasiswa/profil/SkillMinatCard";
-import VisibilitasCard from "@/components/mahasiswa/profil/VisibilitasCard";
 import Toast from "@/components/mahasiswa/profil/Toast";
 import { useMahasiswa } from "@/components/mahasiswa/MahasiswaGuard";
 import {
@@ -253,7 +252,6 @@ export default function ProfilPage() {
             <div className="bg-surface-container-lowest rounded-[2rem] shadow-sm p-6 h-96 animate-pulse" />
             <div className="flex flex-col gap-space-lg">
               <div className="bg-surface-container-lowest rounded-[2rem] shadow-sm p-6 h-64 animate-pulse" />
-              <div className="bg-surface-container-lowest rounded-[2rem] shadow-sm p-6 h-28 animate-pulse" />
             </div>
           </div>
         </div>
@@ -268,18 +266,13 @@ export default function ProfilPage() {
               onPhotoError={(msg) => showToast(msg, "error")}
             />
 
-            {/* Kolom Kanan: Skill & Minat dan Visibilitas */}
+            {/* Kolom Kanan: Skill & Minat */}
             <div className="flex flex-col gap-space-lg">
               <SkillMinatCard
                 selectedTags={selectedTags}
                 allTags={allTags}
                 onAddTag={handleAddTag}
                 onRemoveTag={handleRemoveTag}
-              />
-
-              <VisibilitasCard
-                checked={formData.profil_publik}
-                onChange={(val) => handleFieldChange("profil_publik", val)}
               />
             </div>
           </div>

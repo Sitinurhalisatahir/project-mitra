@@ -41,41 +41,6 @@ export default function ChatRoomHeader({ recipient }) {
           </div>
         </div>
       </div>
-
-      {/* Action Icons on Header */}
-      <div className="flex items-center gap-1 shrink-0">
-        <button
-          type="button"
-          disabled
-          title="Belum tersedia"
-          aria-label="Detail Proyek"
-          className="p-2.5 rounded-full text-on-surface-variant opacity-50 cursor-not-allowed"
-        >
-          <span className="material-symbols-outlined text-[20px]">info</span>
-        </button>
-        <button
-          type="button"
-          disabled
-          title="Belum tersedia"
-          aria-label="Buka Lampiran"
-          className="p-2.5 rounded-full text-on-surface-variant opacity-50 cursor-not-allowed"
-        >
-          <span className="material-symbols-outlined text-[20px]">
-            folder_open
-          </span>
-        </button>
-        <button
-          type="button"
-          disabled
-          title="Belum tersedia"
-          aria-label="Opsi Percakapan"
-          className="p-2.5 rounded-full text-on-surface-variant opacity-50 cursor-not-allowed"
-        >
-          <span className="material-symbols-outlined text-[20px]">
-            more_vert
-          </span>
-        </button>
-      </div>
     </div>
   );
 }

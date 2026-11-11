@@ -95,7 +95,7 @@ export default function ProyekSayaPage() {
     try {
       const [proyekRes, tagsRes] = await Promise.all([
         getProyekSaya(),
-        getAllTags("skill"),
+        getAllTags(),
       ]);
 
       const loadedProjects = Array.isArray(proyekRes) ? proyekRes : [];

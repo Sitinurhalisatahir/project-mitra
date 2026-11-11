@@ -28,7 +28,8 @@ export default function ProyekForm({
   const [deadline, setDeadline] = useState(
     editProject?.deadline ? editProject.deadline.substring(0, 10) : ""
   );
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [isSkillPickerOpen, setIsSkillPickerOpen] = useState(false);
+  const [isMinatPickerOpen, setIsMinatPickerOpen] = useState(false);
 
   // Tanggal hari ini (zona waktu lokal) untuk batas minimum deadline.
   // toISOString() memakai UTC sehingga di WITA bisa mundur satu hari.
@@ -196,35 +197,46 @@ export default function ProyekForm({
           )}
         </div>
 
-        {/* Skill Dibutuhkan */}
+        {/* Skill & Minat Dibutuhkan */}
         <div className="flex flex-col gap-space-xs">
           <label className="text-pill-tag text-on-surface font-semibold">
-            Skill Dibutuhkan
+            Skill & Minat Dibutuhkan
           </label>
           <div className="flex flex-wrap items-center gap-space-xs pt-0.5">
-            {selectedTags.map((tag) => (
-              <span
-                key={tag.tag_id}
-                className="inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-high text-primary text-pill-tag font-semibold"
-              >
-                {tag.nama_tag || tag.nama}
-                <button
-                  type="button"
-                  aria-label={`Hapus skill ${tag.nama_tag || tag.nama}`}
-                  onClick={() => handleRemoveTag(tag.tag_id)}
-                  className="hover:opacity-75 inline-flex items-center justify-center cursor-pointer"
+            {selectedTags.map((tag) => {
+              const isMinat = (tag.jenis || "").toLowerCase() === "minat";
+              return (
+                <span
+                  key={tag.tag_id}
+                  className={`inline-flex items-center gap-1.5 px-space-sm py-1 rounded-full text-pill-tag font-semibold ${
+                    isMinat
+                      ? "bg-secondary-fixed text-on-secondary-fixed-variant"
+                      : "bg-surface-container-high text-primary"
+                  }`}
                 >
-                  <span className="material-symbols-outlined text-[16px]">
-                    close
-                  </span>
-                </button>
-              </span>
-            ))}
+                  {tag.nama_tag || tag.nama}
+                  <button
+                    type="button"
+                    aria-label={`Hapus ${isMinat ? "minat" : "skill"} ${tag.nama_tag || tag.nama}`}
+                    onClick={() => handleRemoveTag(tag.tag_id)}
+                    className="hover:opacity-75 inline-flex items-center justify-center cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">
+                      close
+                    </span>
+                  </button>
+                </span>
+              );
+            })}
 
+            {/* Tombol Tambah Skill */}
             <div className="relative inline-block">
               <button
                 type="button"
-                onClick={() => setIsPickerOpen(!isPickerOpen)}
+                onClick={() => {
+                  setIsSkillPickerOpen((prev) => !prev);
+                  setIsMinatPickerOpen(false);
+                }}
                 className="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container text-primary text-pill-tag font-semibold hover:bg-surface-container-high transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">
@@ -234,17 +246,52 @@ export default function ProyekForm({
               </button>
 
               <TagPicker
-                isOpen={isPickerOpen}
-                onClose={() => setIsPickerOpen(false)}
+                isOpen={isSkillPickerOpen}
+                onClose={() => setIsSkillPickerOpen(false)}
                 availableTags={availableTags.filter(
-                  (at) => !selectedTags.some((st) => st.tag_id === at.tag_id)
+                  (at) =>
+                    ((at.jenis || "").toLowerCase() === "skill" || !at.jenis) &&
+                    !selectedTags.some((st) => st.tag_id === at.tag_id)
                 )}
                 onSelectTag={(tag) => {
                   handleAddTag(tag);
-                  setIsPickerOpen(false);
+                  setIsSkillPickerOpen(false);
                 }}
                 loading={loadingTags}
                 jenis="skill"
+              />
+            </div>
+
+            {/* Tombol Tambah Minat */}
+            <div className="relative inline-block">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMinatPickerOpen((prev) => !prev);
+                  setIsSkillPickerOpen(false);
+                }}
+                className="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-pill-tag font-semibold hover:bg-secondary-fixed-dim transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[16px]">
+                  add
+                </span>
+                Tambah Minat
+              </button>
+
+              <TagPicker
+                isOpen={isMinatPickerOpen}
+                onClose={() => setIsMinatPickerOpen(false)}
+                availableTags={availableTags.filter(
+                  (at) =>
+                    (at.jenis || "").toLowerCase() === "minat" &&
+                    !selectedTags.some((st) => st.tag_id === at.tag_id)
+                )}
+                onSelectTag={(tag) => {
+                  handleAddTag(tag);
+                  setIsMinatPickerOpen(false);
+                }}
+                loading={loadingTags}
+                jenis="minat"
               />
             </div>
           </div>

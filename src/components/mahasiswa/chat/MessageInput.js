@@ -31,26 +31,6 @@ export default function MessageInput({
   return (
     <div className="p-space-md bg-surface-container-lowest shadow-sm z-10 shrink-0 border-t border-outline-variant/20">
       <form onSubmit={handleSubmit} className="flex items-center gap-2" id="chat-form">
-        {/* Attachment Options */}
-        <button
-          type="button"
-          disabled
-          title="Belum tersedia"
-          className="w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant opacity-50 cursor-not-allowed shrink-0"
-        >
-          <span className="material-symbols-outlined text-[22px]">
-            attach_file
-          </span>
-        </button>
-        <button
-          type="button"
-          disabled
-          title="Belum tersedia"
-          className="w-11 h-11 rounded-full hidden sm:flex items-center justify-center text-on-surface-variant opacity-50 cursor-not-allowed shrink-0"
-        >
-          <span className="material-symbols-outlined text-[22px]">image</span>
-        </button>
-
         {/* Input Text Area/Field */}
         <div className="flex-1 relative flex items-center">
           <input
@@ -71,18 +51,8 @@ export default function MessageInput({
                 ? `Tulis pesan untuk ${recipient.nama}...`
                 : "Pilih percakapan terlebih dahulu..."
             }
-            className="w-full h-12 pl-4 pr-12 rounded-full bg-surface border border-outline-variant/40 text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-inner disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full h-12 px-4 rounded-full bg-surface border border-outline-variant/40 text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all shadow-inner disabled:opacity-60 disabled:cursor-not-allowed"
           />
-          <button
-            type="button"
-            disabled
-            title="Belum tersedia"
-            className="absolute right-3 w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant opacity-50 cursor-not-allowed"
-          >
-            <span className="material-symbols-outlined text-[20px]">
-              sentiment_satisfied
-            </span>
-          </button>
         </div>
 
         {/* Send Button */}

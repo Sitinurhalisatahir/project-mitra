@@ -33,15 +33,6 @@ export default function ConversationList({
               {conversations.length}
             </span>
           </div>
-          <button
-            type="button"
-            disabled
-            title="Belum tersedia"
-            aria-label="Filter Diskusi"
-            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container text-on-surface-variant transition-colors opacity-50 cursor-not-allowed"
-          >
-            <span className="material-symbols-outlined text-[19px]">tune</span>
-          </button>
         </div>
 
         {/* Search Input Filter */}

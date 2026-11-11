@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/profil", label: "Profil Saya", icon: "person" },
   { href: "/proyek", label: "Cari Proyek", icon: "explore" },
   { href: "/proyek-saya", label: "Proyek Saya", icon: "folder" },
+  { href: "/proyek-tergabung", label: "Proyek Tergabung", icon: "groups" },
   { href: "/chat", label: "Chat", icon: "chat_bubble" },
   { href: "/notifikasi", label: "Notifikasi", icon: "notifications" },
 ];

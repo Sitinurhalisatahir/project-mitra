@@ -53,15 +53,23 @@ export default function DashboardPage() {
     ]);
 
     // 1. Proyek Saya & Lamaran
-    let myProjects = [];
-    if (proyekRes.status === "fulfilled" && Array.isArray(proyekRes.value)) {
-      myProjects = proyekRes.value;
-    }
+    const myProjects =
+      proyekRes.status === "fulfilled"
+        ? Array.isArray(proyekRes.value)
+          ? proyekRes.value
+          : Array.isArray(proyekRes.value?.data)
+          ? proyekRes.value.data
+          : []
+        : [];
 
-    let myApps = [];
-    if (aplikasiRes.status === "fulfilled" && Array.isArray(aplikasiRes.value)) {
-      myApps = aplikasiRes.value;
-    }
+    const myApps =
+      aplikasiRes.status === "fulfilled"
+        ? Array.isArray(aplikasiRes.value)
+          ? aplikasiRes.value
+          : Array.isArray(aplikasiRes.value?.data)
+          ? aplikasiRes.value.data
+          : []
+        : [];
 
     // Hitung Proyek Saya: proyek milik user + proyek di mana lamaran berstatus diterima (tanpa duplikat)
     const projectIds = new Set();
@@ -88,13 +96,76 @@ export default function DashboardPage() {
       descTags = `${skillCount} skill teknis & ${minatCount} minat proyek`;
     }
 
-    // 3. Lamaran Pending
-    let pendingAppsCount = "-";
-    if (aplikasiRes.status === "fulfilled") {
-      pendingAppsCount = myApps.filter((a) => a.status === "pending").length;
+    // 3. Pelamar Menunggu Persetujuan pada proyek yang dibuat oleh user
+    let combinedApplicants = [];
+    if (proyekRes.status === "fulfilled") {
+      if (myProjects.length > 0) {
+        try {
+          const applicantPromises = myProjects.map((p) =>
+            getPelamarProyek(p.proyek_id, "pending")
+              .then((apps) => {
+                const list = Array.isArray(apps)
+                  ? apps
+                  : Array.isArray(apps?.data)
+                  ? apps.data
+                  : [];
+                return list.map((app) => ({
+                  ...app,
+                  judul_proyek: p.judul,
+                  proyek_id: p.proyek_id,
+                }));
+              })
+              .catch(() => [])
+          );
+
+          const allApplicantsArrays = await Promise.all(applicantPromises);
+          combinedApplicants = allApplicantsArrays.flat();
+
+          combinedApplicants.sort(
+            (a, b) => new Date(b.applied_at) - new Date(a.applied_at)
+          );
+
+          setPelamarList(combinedApplicants);
+          setPelamarCount(combinedApplicants.length);
+        } catch {
+          setErrorPelamar("Gagal memuat pelamar proyek");
+        } finally {
+          setLoadingPelamar(false);
+        }
+      } else {
+        setPelamarList([]);
+        setPelamarCount(0);
+        setLoadingPelamar(false);
+      }
+    } else {
+      setErrorPelamar("Gagal memuat proyek untuk memeriksa pelamar");
+      setLoadingPelamar(false);
     }
 
-    // 4. Pesan Belum Dibaca
+    // 4. Lamaran / Pelamar Pending (Gabungan pelamar di proyek user + lamaran user sendiri)
+    const myPendingAppsCount = myApps.filter((a) => a.status === "pending").length;
+    const pelamarPendingCount = combinedApplicants.length;
+
+    let pendingTotal = "-";
+    let pendingDesc = "Menunggu peninjauan ketua proyek";
+
+    if (aplikasiRes.status === "fulfilled" || proyekRes.status === "fulfilled") {
+      const myPart = aplikasiRes.status === "fulfilled" ? myPendingAppsCount : 0;
+      const pelamarPart = proyekRes.status === "fulfilled" ? pelamarPendingCount : 0;
+      pendingTotal = myPart + pelamarPart;
+
+      if (pelamarPart > 0 && myPart > 0) {
+        pendingDesc = `${pelamarPart} pelamar & ${myPart} lamaran diajukan`;
+      } else if (pelamarPart > 0) {
+        pendingDesc = `${pelamarPart} pelamar menunggu persetujuan Anda`;
+      } else if (myPart > 0) {
+        pendingDesc = `${myPart} lamaran menunggu peninjauan ketua proyek`;
+      } else {
+        pendingDesc = "Menunggu peninjauan ketua proyek";
+      }
+    }
+
+    // 5. Pesan Belum Dibaca
     let totalUnread = "-";
     if (pesanRes.status === "fulfilled" || notifRes.status === "fulfilled") {
       let unreadMessages = 0;
@@ -115,13 +186,14 @@ export default function DashboardPage() {
       totalUnread = unreadMessages + unreadNotifs;
     }
 
+    // Set stats summary cards
     setStats({
       proyekCount: totalProjects,
       proyekDesc: `${totalProjects} proyek tim aktif diikuti`,
       skillCount: totalTags,
       skillDesc: descTags,
-      lamaranCount: pendingAppsCount,
-      lamaranDesc: "Menunggu peninjauan ketua proyek",
+      lamaranCount: pendingTotal,
+      lamaranDesc: pendingDesc,
       pesanCount: totalUnread,
       pesanDesc: "Dari obrolan tim & notifikasi sistem",
     });
@@ -142,40 +214,6 @@ export default function DashboardPage() {
     } else {
       setErrorLamaran("Gagal memuat aktivitas lamaran");
       setLoadingLamaran(false);
-    }
-
-    // 5. Pelamar Menunggu Persetujuan
-    if (proyekRes.status === "fulfilled") {
-      try {
-        const applicantPromises = myProjects.map((p) =>
-          getPelamarProyek(p.proyek_id, "pending")
-            .then((apps) =>
-              (Array.isArray(apps) ? apps : []).map((app) => ({
-                ...app,
-                judul_proyek: p.judul,
-                proyek_id: p.proyek_id,
-              }))
-            )
-            .catch(() => [])
-        );
-
-        const allApplicantsArrays = await Promise.all(applicantPromises);
-        const combinedApplicants = allApplicantsArrays.flat();
-
-        combinedApplicants.sort(
-          (a, b) => new Date(b.applied_at) - new Date(a.applied_at)
-        );
-
-        setPelamarList(combinedApplicants);
-        setPelamarCount(combinedApplicants.length);
-      } catch {
-        setErrorPelamar("Gagal memuat pelamar proyek");
-      } finally {
-        setLoadingPelamar(false);
-      }
-    } else {
-      setErrorPelamar("Gagal memuat proyek untuk memeriksa pelamar");
-      setLoadingPelamar(false);
     }
   }, []);
 
