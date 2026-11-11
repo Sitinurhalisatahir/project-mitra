@@ -136,3 +136,64 @@ export async function tandaiSemuaNotifikasiDibaca() {
     method: "PATCH",
   });
 }
+
+import { apiFetch } from "./client";
+
+/** GET /api/auth/me – profil lengkap user yang sedang login */
+export async function getMyProfile() {
+  return await apiFetch("/api/auth/me");
+}
+
+/**
+ * GET /api/proyek?mine=true&status=all&limit=100
+ * Proyek milik user yang sedang login (semua status)
+ */
+export async function getMyProjects() {
+  const data = await apiFetch("/api/proyek?mine=true&status=all&limit=100", {
+    fullResponse: true,
+  });
+  const items = data?.data;
+  return Array.isArray(items) ? items : [];
+}
+
+/**
+ * GET /api/aplikasi
+ * Lamaran yang dikirim oleh user yang sedang login
+ */
+export async function getMyApplications() {
+  const data = await apiFetch("/api/aplikasi");
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * GET /api/proyek/{id}/aplikasi?status=pending
+ * Pelamar pending pada sebuah proyek (hanya pemilik)
+ */
+export async function getPendingApplicants(proyekId) {
+  const data = await apiFetch(
+    `/api/proyek/${proyekId}/aplikasi?status=pending`
+  );
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * GET /api/pesan
+ * Daftar percakapan; setiap item punya field belum_dibaca (integer)
+ */
+export async function getMyMessages() {
+  const data = await apiFetch("/api/pesan");
+  return Array.isArray(data) ? data : [];
+}
+
+/**
+ * GET /api/notifikasi?unread=true&limit=1
+ * Hanya butuh unread_count dari meta
+ */
+export async function getUnreadNotifCount() {
+  const data = await apiFetch("/api/notifikasi?unread=true&limit=1", {
+    fullResponse: true,
+  });
+  return data?.meta?.unread_count ?? 0;
+}
+
+
