@@ -15,6 +15,7 @@ export default function LoginForm() {
   const router = useRouter();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isPendingVerification, setIsPendingVerification] = useState(false);
@@ -123,16 +124,25 @@ export default function LoginForm() {
                 <i className="fa-solid fa-lock text-base"></i>
               </div>
               <input
-                className="w-full pl-12 pr-6 py-4 bg-white text-slate-800 placeholder:text-slate-400 text-sm sm:text-base font-medium rounded-full border-2 border-transparent focus:outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-400/30 transition-all shadow-xs"
+                className="w-full pl-12 pr-12 py-4 bg-white text-slate-800 placeholder:text-slate-400 text-sm sm:text-base font-medium rounded-full border-2 border-transparent focus:outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-400/30 transition-all shadow-xs"
                 id="password"
                 name="password"
                 placeholder="Password"
                 required
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 value={password}
                 onChange={handlePasswordChange}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute inset-y-0 right-0 pr-5 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer focus:outline-none"
+                aria-label={showPassword ? "Sembunyikan password" : "Lihat password"}
+                title={showPassword ? "Sembunyikan password" : "Lihat password"}
+              >
+                <i className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"} text-base`}></i>
+              </button>
             </div>
           </div>
 
@@ -197,13 +207,6 @@ export default function LoginForm() {
               href="/register"
             >
               Belum punya akun? Registrasi di sini
-            </Link>
-            <Link
-              className="text-xs text-indigo-200/80 hover:text-white transition-colors inline-flex items-center gap-1.5 pt-1"
-              href="/"
-            >
-              <i className="fa-solid fa-arrow-left text-[10px]"></i>
-              <span>Kembali ke Beranda</span>
             </Link>
           </div>
         </form>

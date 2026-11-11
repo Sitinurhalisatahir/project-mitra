@@ -19,6 +19,19 @@ export async function verifikasiPengguna(id) {
   });
 }
 
+export async function cabutVerifikasiPengguna(id) {
+  return await apiFetch(`/api/admin/pengguna/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ is_verified: false }),
+  });
+}
+
+export async function tolakPengguna(id) {
+  return await apiFetch(`/api/admin/pengguna/${id}`, {
+    method: "DELETE",
+  });
+}
+
 export async function getTags() {
   return await apiFetch("/api/tag");
 }
@@ -59,3 +72,18 @@ export async function getSemuaPengguna(params = {}) {
   const qs = sp.toString();
   return await apiFetch(`/api/admin/pengguna${qs ? `?${qs}` : ""}`);
 }
+
+export async function updateAdminProfile(payload) {
+  return await apiFetch("/api/profil", {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAdminPassword(payload) {
+  return await apiFetch("/api/auth/password", {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+

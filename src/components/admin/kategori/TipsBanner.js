@@ -14,25 +14,12 @@ export default function TipsBanner() {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-2.5 shrink-0 self-end md:self-center">
-        <button
-          type="button"
-          disabled
-          title="Belum tersedia"
-          className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-colors shadow-sm opacity-50 cursor-not-allowed"
-        >
-          Unduh Log
-        </button>
-        <button
-          type="button"
-          disabled
-          title="Belum tersedia"
-          className="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-200 transition-colors opacity-50 cursor-not-allowed"
-        >
-          Sinkronkan Mesin
-        </button>
+      <div className="flex items-center gap-2 shrink-0 self-start md:self-center">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-emerald-700 border border-emerald-200 text-xs font-semibold shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          Sinkronisasi Aktif
+        </span>
       </div>
     </div>
   );
 }
-

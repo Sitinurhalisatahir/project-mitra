@@ -28,22 +28,21 @@ export default function PencocokanCard({
     );
   }
 
+  const diterima = Number(lamaranPerStatus?.diterima || 0);
+  const ditolak = Number(lamaranPerStatus?.ditolak || 0);
+  const pending = Number(lamaranPerStatus?.pending || 0);
+  const totalLamaran = diterima + ditolak + pending;
+
   // Hitung tingkat keberhasilan pencocokan dari lamaran (diterima / total) bila field eksplisit tidak ada
   let rate = null;
   if (typeof tingkatKeberhasilan === "number") {
     rate = tingkatKeberhasilan;
-  } else {
-    const diterima = lamaranPerStatus?.diterima || 0;
-    const ditolak = lamaranPerStatus?.ditolak || 0;
-    const pending = lamaranPerStatus?.pending || 0;
-    const totalLamaran = diterima + ditolak + pending;
-    if (totalLamaran > 0) {
-      rate = Math.round((diterima / totalLamaran) * 100);
-    }
+  } else if (totalLamaran > 0) {
+    rate = Math.round((diterima / totalLamaran) * 100);
   }
 
-  const isOptimal = rate !== null && rate >= 80;
-  const badgeText = isOptimal ? "Optimal" : "Perlu Ditingkatkan";
+  const isOptimal = rate !== null && rate >= 60;
+  const badgeText = rate !== null ? (isOptimal ? "Optimal" : "Perlu Ditingkatkan") : "Belum Ada Data";
   const displayRate = rate !== null ? `${rate}%` : "-";
 
   return (
@@ -72,60 +71,40 @@ export default function PencocokanCard({
 
         {/* Micro-stats / Breakdown Section */}
         <div className="space-y-4 pt-4">
-          {/* Kepuasan Rating Pill (Data tidak tersedia -> Bintang tanpa isi dan nilai "- / 5.0") */}
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-surface-container-low">
+          {/* Total Lamaran Masuk */}
+          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-surface-container-low">
             <div className="flex items-center gap-2">
-              <div className="flex text-slate-300">
-                <span
-                  className="material-symbols-outlined text-[18px]"
-                  style={{ fontVariationSettings: "'FILL' 0" }}
-                >
-                  star
-                </span>
-                <span
-                  className="material-symbols-outlined text-[18px]"
-                  style={{ fontVariationSettings: "'FILL' 0" }}
-                >
-                  star
-                </span>
-                <span
-                  className="material-symbols-outlined text-[18px]"
-                  style={{ fontVariationSettings: "'FILL' 0" }}
-                >
-                  star
-                </span>
-                <span
-                  className="material-symbols-outlined text-[18px]"
-                  style={{ fontVariationSettings: "'FILL' 0" }}
-                >
-                  star
-                </span>
-                <span
-                  className="material-symbols-outlined text-[18px]"
-                  style={{ fontVariationSettings: "'FILL' 0" }}
-                >
-                  star
-                </span>
-              </div>
+              <span className="material-symbols-outlined text-[20px] text-primary">
+                send
+              </span>
               <span className="text-label-md text-on-surface font-bold">
-                Kepuasan Tim
+                Total Lamaran Tim
               </span>
             </div>
             <span className="text-title-lg text-on-surface font-extrabold">
-              -{" "}
-              <span className="text-label-md text-on-surface-variant font-medium">
-                / 5.0
-              </span>
+              {totalLamaran.toLocaleString("id-ID")}
             </span>
           </div>
 
-          {/* Match Speed (Data tidak tersedia -> "-") */}
-          <div className="flex items-center justify-between py-1.5 px-3 rounded-full bg-surface-container-low text-on-surface-variant text-label-md">
-            <span className="font-medium">Kecepatan Pencocokan</span>
-            <span className="font-bold text-on-surface">-</span>
+          {/* Breakdown Pills: Diterima vs Menunggu */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface text-label-md font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              {diterima.toLocaleString("id-ID")} Diterima
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface text-label-md font-semibold">
+              <span className="w-2 h-2 rounded-full bg-amber-500" />
+              {pending.toLocaleString("id-ID")} Pending
+            </div>
+            {ditolak > 0 && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface text-label-md font-semibold">
+                <span className="w-2 h-2 rounded-full bg-rose-500" />
+                {ditolak.toLocaleString("id-ID")} Ditolak
+              </div>
+            )}
           </div>
 
-          {/* Algorithm status tag (Teks statis) */}
+          {/* Algorithm status tag */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant text-label-md">
             <span className="material-symbols-outlined text-[16px] text-tertiary">
               check_circle
@@ -146,4 +125,3 @@ export default function PencocokanCard({
     </div>
   );
 }
-

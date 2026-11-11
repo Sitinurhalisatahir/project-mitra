@@ -54,3 +54,13 @@ export const PATCH = route(async ({ req, params }) => {
   if (!rows[0]) throw new ApiError(404, 'Pengguna tidak ditemukan');
   return ok(rows[0]);
 }, { admin: true });
+
+// Tolak / Hapus akun mahasiswa pendaftar yang tidak valid
+export const DELETE = route(async ({ params }) => {
+  const { rows } = await query(
+    'DELETE FROM pengguna WHERE pengguna_id = $1 RETURNING pengguna_id, nim, nama',
+    [intParam(params.id)]
+  );
+  if (!rows[0]) throw new ApiError(404, 'Pengguna tidak ditemukan');
+  return ok({ message: 'Pendaftaran pengguna berhasil ditolak dan dihapus', pengguna: rows[0] });
+}, { admin: true });

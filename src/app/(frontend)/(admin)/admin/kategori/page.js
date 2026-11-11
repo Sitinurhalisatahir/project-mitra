@@ -7,6 +7,7 @@ import KategoriPanel from "@/components/admin/kategori/KategoriPanel";
 import KategoriFormModal from "@/components/admin/kategori/KategoriFormModal";
 import ConfirmDialog from "@/components/admin/kategori/ConfirmDialog";
 import TipsBanner from "@/components/admin/kategori/TipsBanner";
+import AdminToast from "@/components/admin/AdminToast";
 import { getTags, createTag, updateTag, deleteTag } from "@/lib/frontend/api/admin";
 
 export default function AdminKategoriPage() {
@@ -25,6 +26,13 @@ export default function AdminKategoriPage() {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+
+  // Toast Notification State
+  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+
+  const showToast = useCallback((message, type = "success") => {
+    setToast({ show: true, message, type });
+  }, []);
 
   const fetchTagsData = useCallback(async () => {
     setLoading(true);
@@ -104,6 +112,7 @@ export default function AdminKategoriPage() {
     if (formMode === "add") {
       const created = await createTag(payload);
       setTags((prev) => [...prev, created].sort((a, b) => (a.tag_id || 0) - (b.tag_id || 0)));
+      showToast(`Kategori "${payload.nama_tag}" berhasil ditambahkan!`, "success");
     } else if (formMode === "edit" && formInitialData) {
       const updated = await updateTag(formInitialData.tag_id, payload);
       setTags((prev) =>
@@ -111,6 +120,7 @@ export default function AdminKategoriPage() {
           .map((t) => (t.tag_id === updated.tag_id ? updated : t))
           .sort((a, b) => (a.tag_id || 0) - (b.tag_id || 0))
       );
+      showToast(`Kategori "${payload.nama_tag}" berhasil diperbarui!`, "success");
     }
   }
 
@@ -125,11 +135,13 @@ export default function AdminKategoriPage() {
     if (!itemToDelete) return;
     setDeleteLoading(true);
     setDeleteError("");
+    const deletedName = itemToDelete.nama_tag;
     try {
       await deleteTag(itemToDelete.tag_id);
       setTags((prev) => prev.filter((t) => t.tag_id !== itemToDelete.tag_id));
       setIsConfirmOpen(false);
       setItemToDelete(null);
+      showToast(`Kategori "${deletedName}" berhasil dihapus!`, "success");
     } catch (err) {
       setDeleteError(err.message || "Gagal menghapus kategori");
     } finally {
@@ -215,6 +227,14 @@ export default function AdminKategoriPage() {
             setDeleteError("");
           }
         }}
+      />
+
+      {/* Toast Notification */}
+      <AdminToast
+        show={toast.show}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast((prev) => ({ ...prev, show: false }))}
       />
     </div>
   );

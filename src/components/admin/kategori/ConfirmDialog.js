@@ -6,6 +6,8 @@ export default function ConfirmDialog({
   isOpen,
   title = "Konfirmasi Hapus",
   itemName = "",
+  description = "",
+  confirmText = "Hapus",
   loading = false,
   error = "",
   onConfirm,
@@ -38,7 +40,11 @@ export default function ConfirmDialog({
           <div>
             <h3 className="text-base font-bold text-slate-900">{title}</h3>
             <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Hapus kategori <span className="font-semibold text-slate-800">{itemName}</span>? Kategori ini juga akan dilepas dari profil mahasiswa dan proyek yang memakainya.
+              {description || (
+                <>
+                  Hapus kategori <span className="font-semibold text-slate-800">{itemName}</span>? Kategori ini juga akan dilepas dari profil mahasiswa dan proyek yang memakainya.
+                </>
+              )}
             </p>
           </div>
         </div>
@@ -70,7 +76,7 @@ export default function ConfirmDialog({
                 <span>Memproses...</span>
               </>
             ) : (
-              <span>Hapus</span>
+              <span>{confirmText}</span>
             )}
           </button>
         </div>

@@ -61,7 +61,7 @@ export default function PenggunaCard({
             Jumlah Pengguna Aktif
           </h2>
           <div className="text-display-lg text-on-surface font-extrabold tracking-tight">
-            {totalMahasiswa.toLocaleString("id-ID")}
+            {terverifikasi.toLocaleString("id-ID")}
           </div>
         </div>
 
@@ -71,12 +71,18 @@ export default function PenggunaCard({
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface text-label-md font-semibold">
               <span className="w-2 h-2 rounded-full bg-primary" />
-              {totalMahasiswa.toLocaleString("id-ID")} Mahasiswa
+              {terverifikasi.toLocaleString("id-ID")} Mahasiswa Aktif
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface text-label-md font-semibold">
               <span className="w-2 h-2 rounded-full bg-secondary-container" />
               {adminCount.toLocaleString("id-ID")} Admin
             </div>
+            {menungguVerifikasi > 0 && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 text-label-md font-semibold border border-amber-200">
+                <span className="w-2 h-2 rounded-full bg-amber-500" />
+                {menungguVerifikasi.toLocaleString("id-ID")} Menunggu ACC
+              </div>
+            )}
           </div>
 
           {/* Progress Indicator */}

@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import StatCard from "@/components/admin/StatCard";
 import VerificationCard from "@/components/admin/VerificationCard";
 import CategoryCard from "@/components/admin/CategoryCard";
+import AdminToast from "@/components/admin/AdminToast";
 import {
   IconUsers,
   IconFolder,
@@ -32,6 +33,8 @@ export default function AdminDashboardPage() {
   const [tags, setTags] = useState([]);
   const [totalTagsCount, setTotalTagsCount] = useState(0);
   const [tagsLoading, setTagsLoading] = useState(true);
+
+  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
 
   useEffect(() => {
     let isMounted = true;
@@ -94,13 +97,14 @@ export default function AdminDashboardPage() {
   const handleVerificationDone = useCallback((verifiedId) => {
     setPendingUsers((prev) => prev.filter((u) => u.pengguna_id !== verifiedId));
     setTotalWaiting((prev) => Math.max(0, prev - 1));
+    setToast({ show: true, message: "Akun mahasiswa berhasil diverifikasi!", type: "success" });
     getStatistik().then((freshStats) => {
       if (freshStats) setStats(freshStats);
     }).catch(() => {});
   }, []);
 
-  // Kalkulasi data statistik
-  const totalMahasiswa = stats?.total_mahasiswa ?? 0;
+  // Kalkulasi data statistik: hanya pengguna yang sudah diverifikasi admin yang dihitung sebagai pengguna aktif
+  const penggunaAktif = stats?.terverifikasi ?? 0;
 
   const totalProyek = Object.values(stats?.proyek_per_status || {}).reduce(
     (sum, val) => sum + (Number(val) || 0),
@@ -137,10 +141,10 @@ export default function AdminDashboardPage() {
 
       {/* BEGIN: StatCardsSection */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5" data-purpose="metrics-summary">
-        {/* Stat Card 1: Pengguna Aktif */}
+        {/* Stat Card 1: Pengguna Aktif (Hanya yang terverifikasi) */}
         <StatCard
           title="JUMLAH PENGGUNA AKTIF"
-          value={formatNumber(totalMahasiswa)}
+          value={formatNumber(penggunaAktif)}
           subtitle="Pengguna terverifikasi"
           icon={IconUsers}
           iconBg="bg-indigo-50 text-brand-600"
@@ -190,6 +194,14 @@ export default function AdminDashboardPage() {
         />
       </div>
       {/* END: DetailTablesAndTagsGrid */}
+
+      {/* Toast Notification */}
+      <AdminToast
+        show={toast.show}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast((prev) => ({ ...prev, show: false }))}
+      />
     </div>
   );
 }

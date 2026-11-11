@@ -101,12 +101,12 @@ export default function AdminSidebar() {
         </nav>
       </div>
 
-      {/* Sidebar Bottom: Logout */}
-      <div className="p-6 border-t border-slate-100" data-purpose="sidebar-footer">
+      {/* Sidebar Bottom: Logout (Diberi padding bawah agar tidak tertutup popup/overlay Next.js) */}
+      <div className="p-6 pb-24 border-t border-slate-100" data-purpose="sidebar-footer">
         <button
           type="button"
           onClick={handleLogout}
-          className="flex items-center space-x-2 text-rose-500 hover:text-rose-600 font-semibold text-sm transition-colors group cursor-pointer"
+          className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-full text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-semibold text-sm transition-all group cursor-pointer border border-transparent hover:border-rose-100"
         >
           <IconLogout className="w-4 h-4 text-rose-500 group-hover:-translate-x-0.5 transition-transform" />
           <span>Keluar</span>

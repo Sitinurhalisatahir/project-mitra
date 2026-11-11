@@ -68,8 +68,8 @@ export default function MahasiswaSidebar() {
         </nav>
       </div>
 
-      {/* Logout button */}
-      <div className="pt-space-md border-t border-outline-variant/30">
+      {/* Logout button (Diberi padding bawah agar tidak tertutup popup/overlay Next.js) */}
+      <div className="pt-space-md pb-24 border-t border-outline-variant/30">
         <button
           onClick={handleLogout}
           type="button"

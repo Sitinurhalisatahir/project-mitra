@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { IconInfo, IconChevronLeft, IconChevronRight } from "@/components/admin/icons";
 import VerifikasiRow from "./VerifikasiRow";
 
@@ -14,15 +15,45 @@ export default function VerifikasiTable({
   loading = false,
   processingId = null,
   onVerify,
+  onRevoke,
+  onReject,
   errorMsg = "",
   currentPage = 1,
   pageSize = 10,
   onPageChange,
 }) {
-  const totalItems = users.length;
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const searchedUsers = useMemo(() => {
+    if (!searchQuery.trim()) return users;
+    const q = searchQuery.toLowerCase().trim();
+    return users.filter(
+      (u) =>
+        (u.nama && u.nama.toLowerCase().includes(q)) ||
+        (u.nim && u.nim.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.jurusan && u.jurusan.toLowerCase().includes(q))
+    );
+  }, [users, searchQuery]);
+
+  const totalItems = searchedUsers.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedUsers = users.slice(startIndex, startIndex + pageSize);
+  const paginatedUsers = searchedUsers.slice(startIndex, startIndex + pageSize);
+
+  function handleSearchChange(e) {
+    setSearchQuery(e.target.value);
+    if (currentPage !== 1) {
+      onPageChange(1);
+    }
+  }
+
+  function handleFilterClick(filterKey) {
+    onFilterChange(filterKey);
+    if (currentPage !== 1) {
+      onPageChange(1);
+    }
+  }
 
   return (
     <div className="w-full bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
@@ -40,14 +71,14 @@ export default function VerifikasiTable({
         </div>
       </div>
 
-      {/* Subheader with Filter Tabs and Sync Indicator */}
+      {/* Subheader with Filter Tabs, Search Bar and Sync Indicator */}
       <div className="px-8 py-3 bg-slate-50/60 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
         {/* Filter buttons */}
         <div className="flex items-center gap-2">
           {/* Semua */}
           <button
             type="button"
-            onClick={() => onFilterChange("all")}
+            onClick={() => handleFilterClick("all")}
             className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
               currentFilter === "all"
                 ? "bg-[#4F46E5] text-white shadow-sm"
@@ -60,7 +91,7 @@ export default function VerifikasiTable({
           {/* Menunggu */}
           <button
             type="button"
-            onClick={() => onFilterChange("menunggu")}
+            onClick={() => handleFilterClick("menunggu")}
             className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
               currentFilter === "menunggu"
                 ? "bg-[#4F46E5] text-white shadow-sm"
@@ -78,7 +109,7 @@ export default function VerifikasiTable({
           {/* Terverifikasi */}
           <button
             type="button"
-            onClick={() => onFilterChange("verified")}
+            onClick={() => handleFilterClick("verified")}
             className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
               currentFilter === "verified"
                 ? "bg-[#4F46E5] text-white shadow-sm"
@@ -94,10 +125,40 @@ export default function VerifikasiTable({
           </button>
         </div>
 
-        {/* Sync indicator */}
-        <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Sinkronisasi otomatis aktif • Diperbarui {relativeTime}</span>
+        {/* Search Input & Sync indicator */}
+        <div className="flex items-center gap-4 flex-wrap">
+          {/* Search Box */}
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[17px] text-slate-400 pointer-events-none">
+              search
+            </span>
+            <input
+              type="text"
+              placeholder="Cari nama, NIM, jurusan..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="pl-8.5 pr-7 py-1.5 text-xs bg-white border border-slate-200 rounded-full text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/30 w-52 sm:w-64 transition"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  if (currentPage !== 1) onPageChange(1);
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                title="Hapus pencarian"
+              >
+                <span className="material-symbols-outlined text-[15px]">close</span>
+              </button>
+            )}
+          </div>
+
+          {/* Sync indicator */}
+          <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Diperbarui {relativeTime}</span>
+          </div>
         </div>
       </div>
 
@@ -159,8 +220,21 @@ export default function VerifikasiTable({
               ))
             ) : paginatedUsers.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-sm text-slate-400 font-medium">
-                  Tidak ada pengajuan akun
+                <td colSpan={5} className="py-12 text-center text-sm text-slate-400 font-medium">
+                  {searchQuery ? (
+                    <div className="flex flex-col items-center gap-1">
+                      <span>Tidak ditemukan mahasiswa dengan kata kunci &quot;{searchQuery}&quot;</span>
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery("")}
+                        className="text-xs text-indigo-600 font-semibold underline hover:no-underline cursor-pointer mt-1"
+                      >
+                        Reset pencarian
+                      </button>
+                    </div>
+                  ) : (
+                    "Tidak ada pengajuan akun"
+                  )}
                 </td>
               </tr>
             ) : (
@@ -170,6 +244,8 @@ export default function VerifikasiTable({
                   user={user}
                   isProcessing={processingId === user.pengguna_id}
                   onVerify={onVerify}
+                  onRevoke={onRevoke}
+                  onReject={onReject}
                 />
               ))
             )}
@@ -180,7 +256,7 @@ export default function VerifikasiTable({
       {/* Card Footer with Pagination */}
       <div className="px-8 py-4 bg-white border-t border-slate-50 flex items-center justify-between">
         <span className="text-xs text-slate-400 font-medium">
-          Menampilkan {paginatedUsers.length} permohonan terbaru
+          Menampilkan {paginatedUsers.length} dari {totalItems} data
         </span>
         <div className="flex items-center space-x-2">
           {/* Previous Page */}
@@ -227,4 +303,3 @@ export default function VerifikasiTable({
     </div>
   );
 }
-
