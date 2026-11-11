@@ -139,12 +139,19 @@ export default function RegisterForm() {
         <AuthButton loading={loading}>Daftar</AuthButton>
 
         {/* Login Link */}
-        <div className="text-center pt-2">
+        <div className="text-center pt-2 flex flex-col items-center gap-2">
           <Link
             className="text-sm text-indigo-100 hover:text-white underline underline-offset-4 decoration-indigo-300/70 hover:decoration-white transition-colors duration-150 inline-block"
             href="/login"
           >
             Sudah punya akun? Login di sini
+          </Link>
+          <Link
+            className="text-xs text-indigo-200/80 hover:text-white transition-colors inline-flex items-center gap-1.5 pt-1"
+            href="/"
+          >
+            <i className="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Kembali ke Beranda</span>
           </Link>
         </div>
       </form>

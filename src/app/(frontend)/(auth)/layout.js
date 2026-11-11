@@ -1,3 +1,4 @@
+import Link from "next/link";
 import BrandLogo from "@/components/auth/BrandLogo";
 
 export default function AuthLayout({ children }) {
@@ -11,6 +12,13 @@ export default function AuthLayout({ children }) {
         {/* Top Navigation / Brand Anchor */}
         <div className="w-full max-w-5xl flex items-center justify-between mb-8 sm:mb-10 px-2 sm:px-4">
           <BrandLogo />
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 hover:bg-white text-slate-700 hover:text-indigo-600 text-sm font-semibold shadow-xs hover:shadow-md transition-all duration-200 border border-slate-200/60"
+          >
+            <i className="fa-solid fa-arrow-left text-xs"></i>
+            <span>Kembali ke Beranda</span>
+          </Link>
         </div>
       </div>
 

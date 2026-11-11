@@ -1,8 +1,10 @@
+import Link from "next/link";
+
 export default function BrandLogo() {
   return (
-    <div className="flex items-center group cursor-pointer select-none">
+    <Link href="/" className="flex items-center group select-none">
       <div className="flex items-center gap-2.5">
-        <div className="w-10 h-10 rounded-xl bg-[#4F46E5] flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+        <div className="w-10 h-10 rounded-xl bg-[#4F46E5] flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
           <svg
             className="w-6 h-6"
             fill="none"
@@ -26,6 +28,6 @@ export default function BrandLogo() {
           SkillMatch
         </span>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -137,8 +137,6 @@ export async function tandaiSemuaNotifikasiDibaca() {
   });
 }
 
-import { apiFetch } from "./client";
-
 /** GET /api/auth/me – profil lengkap user yang sedang login */
 export async function getMyProfile() {
   return await apiFetch("/api/auth/me");
