@@ -33,7 +33,8 @@ function KategoriFormContent({
       await onSubmit({
         nama_tag: cleanNama,
         jenis: initialData?.jenis || defaultJenis,
-        kategori: kategori.trim() || undefined,
+        // Saat ubah, kategori yang dikosongkan dikirim null agar benar-benar terhapus
+        kategori: kategori.trim() || (mode === "edit" ? null : undefined),
       });
       onClose();
     } catch (err) {

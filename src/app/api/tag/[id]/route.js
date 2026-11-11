@@ -6,7 +6,7 @@ import { updateRow } from '@/lib/sql';
 const schema = z.object({
   nama_tag: z.string().min(1).max(100),
   jenis: z.enum(['skill', 'minat']),
-  kategori: z.string().max(50),
+  kategori: z.string().max(50).nullable(),
 }).partial();
 
 /**

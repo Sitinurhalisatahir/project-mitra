@@ -69,7 +69,7 @@ function ChatContent() {
   const loadConversations = useCallback(async () => {
     try {
       const res = await getPercakapan();
-      const list = Array.isArray(res.data) ? res.data : [];
+      const list = Array.isArray(res) ? res : [];
       setConversations(list);
       return list;
     } catch (err) {
@@ -92,7 +92,7 @@ function ChatContent() {
         ]);
 
         if (!isMounted) return;
-        setCurrentUser(userRes.data || null);
+        setCurrentUser(userRes || null);
 
         // Check if query param exists
         if (targetUserParam) {
@@ -110,7 +110,7 @@ function ChatContent() {
               // Fetch user profile if not in current conversation list
               try {
                 const profileRes = await getProfilPengguna(targetId);
-                const p = profileRes.data;
+                const p = profileRes;
                 const stub = {
                   lawan_id: targetId,
                   lawan_nama: p.nama,
@@ -181,7 +181,7 @@ function ChatContent() {
       }
       try {
         const res = await getRiwayatPesan(userId);
-        const serverMessages = Array.isArray(res.data) ? res.data : [];
+        const serverMessages = Array.isArray(res) ? res : [];
 
         setMessages((prev) => {
           // Preserve any optimistic messages that haven't finished sending
@@ -328,8 +328,7 @@ function ChatContent() {
     });
 
     try {
-      const res = await kirimPesan(selectedUserId, content);
-      const serverMsg = res.data;
+      const serverMsg = await kirimPesan(selectedUserId, content);
 
       setMessages((prev) =>
         prev.map((m) => (m.client_id === tempClientId ? serverMsg : m))
@@ -358,8 +357,7 @@ function ChatContent() {
     );
 
     try {
-      const res = await kirimPesan(selectedUserId, failedMsg.isi_pesan);
-      const serverMsg = res.data;
+      const serverMsg = await kirimPesan(selectedUserId, failedMsg.isi_pesan);
 
       setMessages((prev) =>
         prev.map((m) =>

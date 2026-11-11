@@ -45,6 +45,7 @@ export default function ProyekSayaPage() {
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
   const [formFieldErrors, setFormFieldErrors] = useState({});
   const [formGeneralError, setFormGeneralError] = useState(null);
+  const [formResetKey, setFormResetKey] = useState(0);
 
   // Status updating state for projects
   const [updatingStatusProjectId, setUpdatingStatusProjectId] = useState(null);
@@ -57,7 +58,7 @@ export default function ProyekSayaPage() {
       const res = await getPelamarProyek(proyekId);
       setApplicantsMap((prev) => ({
         ...prev,
-        [proyekId]: Array.isArray(res.data) ? res.data : [],
+        [proyekId]: Array.isArray(res) ? res : [],
       }));
     } catch (err) {
       setApplicantErrorMap((prev) => ({
@@ -79,7 +80,7 @@ export default function ProyekSayaPage() {
     setRekomendasiError(null);
     try {
       const res = await getRekomendasiMitra(proyekId, 3);
-      setRekomendasiList(Array.isArray(res.data) ? res.data : []);
+      setRekomendasiList(Array.isArray(res) ? res : []);
     } catch (err) {
       setRekomendasiError(err.message || "Gagal memuat rekomendasi mitra");
     } finally {
@@ -97,9 +98,7 @@ export default function ProyekSayaPage() {
         getAllTags("skill"),
       ]);
 
-      const loadedProjects = Array.isArray(proyekRes.data)
-        ? proyekRes.data
-        : [];
+      const loadedProjects = Array.isArray(proyekRes) ? proyekRes : [];
       setProjects(loadedProjects);
 
       if (loadedProjects.length > 0) {
@@ -113,7 +112,7 @@ export default function ProyekSayaPage() {
         fetchRecommendations(firstId);
       }
 
-      setAvailableTags(Array.isArray(tagsRes.data) ? tagsRes.data : []);
+      setAvailableTags(Array.isArray(tagsRes) ? tagsRes : []);
     } catch (err) {
       setProjectsError(err.message || "Gagal memuat data proyek");
     } finally {
@@ -144,8 +143,7 @@ export default function ProyekSayaPage() {
 
     try {
       if (isEdit && editProject) {
-        const res = await updateProyek(editProject.proyek_id, payload);
-        const updated = res.data;
+        const updated = await updateProyek(editProject.proyek_id, payload);
 
         setProjects((prev) =>
           prev.map((p) =>
@@ -166,8 +164,7 @@ export default function ProyekSayaPage() {
         setEditProject(null);
         fetchRecommendations(editProject.proyek_id);
       } else {
-        const res = await createProyek(payload);
-        const created = res.data;
+        const created = await createProyek(payload);
 
         // Populate tags array for the newly created project
         const projectWithTags = {
@@ -182,6 +179,9 @@ export default function ProyekSayaPage() {
         setSelectedProjectId(created.proyek_id);
         setApplicantsMap((prev) => ({ ...prev, [created.proyek_id]: [] }));
         fetchRecommendations(created.proyek_id);
+
+        // Kosongkan formulir setelah proyek berhasil dibuat
+        setFormResetKey((k) => k + 1);
       }
     } catch (err) {
       if (err.errors && Array.isArray(err.errors)) {
@@ -241,8 +241,7 @@ export default function ProyekSayaPage() {
     setApplicantErrorMap((prev) => ({ ...prev, [proyekId]: null }));
 
     try {
-      const res = await updateStatusLamaran(aplikasiId, newStatus);
-      const updatedApplicant = res.data;
+      const updatedApplicant = await updateStatusLamaran(aplikasiId, newStatus);
 
       // Update in applicantsMap
       setApplicantsMap((prev) => {
@@ -319,7 +318,7 @@ export default function ProyekSayaPage() {
       <div className="grid grid-cols-12 gap-space-xl items-start">
         {/* Left Column: Form */}
         <ProyekForm
-          key={editProject?.proyek_id || "new"}
+          key={editProject?.proyek_id || `new-${formResetKey}`}
           formRef={formRef}
           editProject={editProject}
           availableTags={availableTags}
