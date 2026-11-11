@@ -18,7 +18,7 @@ export default function NotifikasiPage() {
     setError(null);
     getNotifikasi(false, 50)
       .then((res) => {
-        setNotifications(Array.isArray(res.data) ? res.data : []);
+        setNotifications(Array.isArray(res) ? res : []);
       })
       .catch((err) => {
         setError(err.message || "Gagal memuat notifikasi");
@@ -34,7 +34,7 @@ export default function NotifikasiPage() {
     getNotifikasi(false, 50)
       .then((res) => {
         if (!ignore) {
-          setNotifications(Array.isArray(res.data) ? res.data : []);
+          setNotifications(Array.isArray(res) ? res : []);
           setLoading(false);
         }
       })
@@ -50,7 +50,7 @@ export default function NotifikasiPage() {
         getNotifikasi(false, 50)
           .then((res) => {
             if (!ignore) {
-              setNotifications(Array.isArray(res.data) ? res.data : []);
+              setNotifications(Array.isArray(res) ? res : []);
             }
           })
           .catch(() => {});

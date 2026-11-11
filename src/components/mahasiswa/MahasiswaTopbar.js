@@ -1,11 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getNotifikasi } from "@/lib/frontend/api/mahasiswa";
+import { useMahasiswa } from "@/components/mahasiswa/MahasiswaGuard";
+import { getInitials } from "@/lib/frontend/utils/format";
 
 export default function MahasiswaTopbar() {
+  const router = useRouter();
+  const { user } = useMahasiswa() || {};
   const [hasUnreadNotif, setHasUnreadNotif] = useState(false);
+  const [searchText, setSearchText] = useState("");
+
+  // Pencarian global: membawa kata kunci ke halaman Cari Proyek
+  function handleSearchSubmit(e) {
+    e.preventDefault();
+    const q = searchText.trim();
+    router.push(q ? `/proyek?q=${encodeURIComponent(q)}` : "/proyek");
+  }
 
   useEffect(() => {
     let isMounted = true;
@@ -44,17 +57,25 @@ export default function MahasiswaTopbar() {
         </span>
       </div>
       <div className="flex items-center gap-space-md">
-        <div className="relative flex items-center">
-          <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-[18px]">
+        <form
+          role="search"
+          onSubmit={handleSearchSubmit}
+          className="relative flex items-center"
+        >
+          <span className="material-symbols-outlined absolute left-3 text-on-surface-variant text-[18px] pointer-events-none">
             search
           </span>
           <input
             className="pl-9 pr-4 py-1.5 bg-surface-container-lowest border border-outline-variant/40 rounded-full text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary w-64"
-            placeholder="Cari skill, rekan, proyek..."
-            type="text"
-            readOnly
+            placeholder="Cari proyek atau skill..."
+            aria-label="Cari proyek"
+            type="search"
+            name="q"
+            autoComplete="off"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
           />
-        </div>
+        </form>
         <Link
           href="/notifikasi"
           className="w-9 h-9 rounded-full bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-on-surface relative shadow-sm"
@@ -66,12 +87,14 @@ export default function MahasiswaTopbar() {
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container" />
           )}
         </Link>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          alt="Profile"
-          className="w-8 h-8 rounded-full object-cover"
-          src="/images/profile-default.jpg"
-        />
+        <Link
+          href="/profil"
+          aria-label="Profil saya"
+          title={user?.nama || "Profil saya"}
+          className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-label-md font-bold shadow-sm hover:opacity-90 transition-opacity"
+        >
+          {getInitials(user?.nama)}
+        </Link>
       </div>
     </header>
   );

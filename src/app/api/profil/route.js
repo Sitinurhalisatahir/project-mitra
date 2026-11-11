@@ -8,7 +8,7 @@ const schema = z
   .object({
     nama: z.string().min(1).max(100),
     jurusan: z.string().max(100),
-    angkatan: z.number().int(),
+    angkatan: z.number().int().min(2000).max(new Date().getFullYear() + 1).nullable(),
     ketersediaan_waktu: z.string().max(100),
     profil_publik: z.boolean(),
     // skill & minat; jika dikirim, menggantikan seluruh tag lama

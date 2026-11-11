@@ -32,6 +32,23 @@ export default function FilterPanel({
           <div className="flex flex-col gap-space-xs">
             <label className="flex items-center gap-space-sm p-space-sm rounded-2xl hover:bg-surface-container-low cursor-pointer transition-colors group">
               <input
+                checked={filter.kategori === ""}
+                onChange={() => onChange("kategori", "")}
+                className="w-4 h-4 text-primary accent-primary focus:ring-primary"
+                name="kategori"
+                type="radio"
+                value=""
+              />
+              <span className={`text-body-md transition-colors font-medium ${
+                filter.kategori === ""
+                  ? "text-on-surface group-hover:text-primary"
+                  : "text-on-surface-variant group-hover:text-on-surface"
+              }`}>
+                Semua Kategori
+              </span>
+            </label>
+            <label className="flex items-center gap-space-sm p-space-sm rounded-2xl hover:bg-surface-container-low cursor-pointer transition-colors group">
+              <input
                 checked={filter.kategori === "tugas_kuliah"}
                 onChange={() => onChange("kategori", "tugas_kuliah")}
                 className="w-4 h-4 text-primary accent-primary focus:ring-primary"

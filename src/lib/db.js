@@ -1,4 +1,9 @@
-import { Pool } from 'pg';
+import { Pool, types } from 'pg';
+
+// Kolom DATE (mis. deadline) dikembalikan apa adanya 'YYYY-MM-DD'.
+// Default pg mengubahnya jadi Date lokal sehingga di zona waktu non-UTC (mis. WITA)
+// tanggal bisa bergeser satu hari saat di-serialisasi ke JSON.
+types.setTypeParser(1082, (v) => v);
 
 // Reuse pool saat hot-reload di mode dev
 const g = globalThis;

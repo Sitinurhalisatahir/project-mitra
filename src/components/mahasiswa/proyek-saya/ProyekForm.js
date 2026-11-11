@@ -30,8 +30,10 @@ export default function ProyekForm({
   );
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
-  // Today for min date
-  const todayStr = new Date().toISOString().split("T")[0];
+  // Tanggal hari ini (zona waktu lokal) untuk batas minimum deadline.
+  // toISOString() memakai UTC sehingga di WITA bisa mundur satu hari.
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
   function handleRemoveTag(tagId) {
     setSelectedTags((prev) => prev.filter((t) => t.tag_id !== tagId));

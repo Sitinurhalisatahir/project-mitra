@@ -5,12 +5,13 @@ export default function ProyekList({
   loading = false,
   error = null,
   onRetry,
+  title = "Rekomendasi Untuk Anda",
 }) {
   return (
     <section className="flex-1 flex flex-col gap-space-md min-w-0 w-full">
       <div className="flex items-center justify-between px-space-xs">
         <h2 className="text-title-lg text-on-surface font-bold">
-          Rekomendasi Untuk Anda
+          {title}
         </h2>
         <span className="text-label-md text-on-surface-variant bg-surface-container px-space-sm py-1 rounded-full font-medium">
           Menampilkan {proyekList.length} proyek cocok
