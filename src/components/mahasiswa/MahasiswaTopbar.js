@@ -12,6 +12,25 @@ export default function MahasiswaTopbar() {
   const { user } = useMahasiswa() || {};
   const [hasUnreadNotif, setHasUnreadNotif] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState("");
+
+  useEffect(() => {
+    function updatePhoto() {
+      if (typeof window !== "undefined" && (user?.nim || user?.pengguna_id)) {
+        try {
+          const photo = localStorage.getItem(`profile_photo_${user.nim || user.pengguna_id}`);
+          setProfilePhoto(photo || "");
+        } catch {
+          // ignore
+        }
+      }
+    }
+    updatePhoto();
+    window.addEventListener("foto_profil:berubah", updatePhoto);
+    return () => {
+      window.removeEventListener("foto_profil:berubah", updatePhoto);
+    };
+  }, [user?.nim, user?.pengguna_id]);
 
   // Pencarian global: membawa kata kunci ke halaman Cari Proyek
   function handleSearchSubmit(e) {
@@ -91,9 +110,18 @@ export default function MahasiswaTopbar() {
           href="/profil"
           aria-label="Profil saya"
           title={user?.nama || "Profil saya"}
-          className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-label-md font-bold shadow-sm hover:opacity-90 transition-opacity"
+          className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-label-md font-bold shadow-sm hover:opacity-90 transition-opacity overflow-hidden"
         >
-          {getInitials(user?.nama)}
+          {profilePhoto ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profilePhoto}
+              alt="Profil"
+              className="w-full h-full object-cover rounded-full"
+            />
+          ) : (
+            getInitials(user?.nama)
+          )}
         </Link>
       </div>
     </header>

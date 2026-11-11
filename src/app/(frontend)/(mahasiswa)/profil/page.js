@@ -23,6 +23,7 @@ export default function ProfilPage() {
     angkatan: null,
     ketersediaan_waktu: "",
     profil_publik: true,
+    foto: "",
   });
 
   const [selectedTags, setSelectedTags] = useState([]);
@@ -59,6 +60,15 @@ export default function ProfilPage() {
 
     if (profilRes.status === "fulfilled" && profilRes.value) {
       const p = profilRes.value;
+      let savedPhoto = "";
+      if (typeof window !== "undefined" && (p.nim || p.pengguna_id)) {
+        try {
+          savedPhoto = localStorage.getItem(`profile_photo_${p.nim || p.pengguna_id}`) || "";
+        } catch {
+          // ignore error
+        }
+      }
+
       setFormData({
         nama: p.nama || "",
         nim: p.nim || "",
@@ -66,6 +76,7 @@ export default function ProfilPage() {
         angkatan: p.angkatan ?? null,
         ketersediaan_waktu: p.ketersediaan_waktu || "",
         profil_publik: p.profil_publik !== undefined ? Boolean(p.profil_publik) : true,
+        foto: savedPhoto,
       });
 
       setSelectedTags(Array.isArray(p.tags) ? p.tags : []);
@@ -188,6 +199,20 @@ export default function ProfilPage() {
         }));
       }
 
+      if (typeof window !== "undefined" && (formData.nim || user?.pengguna_id)) {
+        const photoKey = `profile_photo_${formData.nim || user?.pengguna_id}`;
+        try {
+          if (formData.foto) {
+            localStorage.setItem(photoKey, formData.foto);
+          } else {
+            localStorage.removeItem(photoKey);
+          }
+          window.dispatchEvent(new Event("foto_profil:berubah"));
+        } catch {
+          // ignore localStorage error
+        }
+      }
+
       showToast("Profil berhasil disimpan!", "success");
     } catch (err) {
       if (err.errors && Array.isArray(err.errors)) {
@@ -240,6 +265,7 @@ export default function ProfilPage() {
               formData={formData}
               errors={fieldErrors}
               onChange={handleFieldChange}
+              onPhotoError={(msg) => showToast(msg, "error")}
             />
 
             {/* Kolom Kanan: Skill & Minat dan Visibilitas */}

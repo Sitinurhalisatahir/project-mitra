@@ -2,6 +2,7 @@ export default function DataDasarCard({
   formData,
   errors,
   onChange,
+  onPhotoError,
 }) {
   return (
     <div className="bg-surface-container-lowest rounded-[2rem] shadow-sm p-6 flex flex-col gap-space-md">
@@ -21,8 +22,17 @@ export default function DataDasarCard({
       {/* Foto Profil */}
       <div className="flex flex-col sm:flex-row items-center gap-space-md p-4 rounded-2xl bg-surface-container-low/60">
         <div className="relative flex-shrink-0">
-          <div className="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center text-primary shadow-inner border-2 border-surface-container-lowest">
-            <span className="material-symbols-outlined text-[40px]">account_circle</span>
+          <div className="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center text-primary shadow-inner border-2 border-surface-container-lowest overflow-hidden">
+            {formData.foto ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={formData.foto}
+                alt="Foto Profil"
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : (
+              <span className="material-symbols-outlined text-[40px]">account_circle</span>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-1.5 text-center sm:text-left flex-1">
@@ -30,13 +40,41 @@ export default function DataDasarCard({
           <p className="text-label-md text-on-surface-variant">Format JPG, PNG atau WebP (Maks. 2MB)</p>
           <div className="flex items-center gap-2 mt-1 justify-center sm:justify-start">
             <label
-              title="Belum tersedia"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-on-primary text-pill-tag cursor-not-allowed opacity-50 shadow-sm"
+              htmlFor="input-foto-profil"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary hover:bg-primary-container text-on-primary text-pill-tag cursor-pointer transition-colors shadow-sm"
             >
               <span className="material-symbols-outlined text-[16px]">photo_camera</span>
-              Unggah Foto
-              <input type="file" disabled className="hidden" id="input-foto-profil" />
+              {formData.foto ? "Ganti Foto" : "Unggah Foto"}
+              <input
+                type="file"
+                accept="image/png, image/jpeg, image/webp"
+                className="hidden"
+                id="input-foto-profil"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  if (file.size > 2 * 1024 * 1024) {
+                    if (onPhotoError) onPhotoError("Ukuran foto maksimal 2MB");
+                    return;
+                  }
+                  const reader = new FileReader();
+                  reader.onload = (event) => {
+                    onChange("foto", event.target.result);
+                  };
+                  reader.readAsDataURL(file);
+                }}
+              />
             </label>
+            {formData.foto && (
+              <button
+                type="button"
+                onClick={() => onChange("foto", "")}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-outline-variant/60 text-pill-tag text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[14px]">delete</span>
+                Hapus
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -147,4 +185,3 @@ export default function DataDasarCard({
     </div>
   );
 }
-
