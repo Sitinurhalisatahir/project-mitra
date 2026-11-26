@@ -26,11 +26,12 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",
-    "@tailwindcss/turbopack": "^4",
+    "@tailwindcss/postcss": "^4",
     "@types/swagger-ui-react": "^5.18.0",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
+    "postcss": "^8",
     "tailwindcss": "^4"
   }
 }

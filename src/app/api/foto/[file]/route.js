@@ -2,7 +2,6 @@ import path from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { AVATAR_DIR, NAMA_FILE_RE, MIME_BY_EXT } from '@/lib/foto';
 
-export const runtime = 'nodejs';
 
 // Melayani foto profil. Publik (dipakai <img src>, yang tidak bisa mengirim header Authorization).
 // Nama file dibatasi regex sehingga tidak bisa keluar dari folder avatars.

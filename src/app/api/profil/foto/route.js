@@ -11,7 +11,6 @@ import {
   hapusFileFoto,
 } from '@/lib/foto';
 
-export const runtime = 'nodejs';
 
 /**
  * @swagger
